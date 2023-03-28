@@ -117,3 +117,72 @@ The host volume type allows for a host directory to be mounted by all applicatio
 For non-persistent data that only needs to be shared among the applications of a Pod, the empty volume may be used instead. Since the volume is created on the fly, the user may specify the access mode, UID and GID of the empty volume.
 
 While a mount point may have been specified for the host and the empty volume types described above, rkt also supports the mounting of volumes without mount points. In such scenarios, the user may specify individual mount points in each application running in the Pod.
+
+
+
+
+if we delete an existing file from a container, the file also gets deleted from the base container image storage layer. True or False?
+
+A.
+True
+B.
+False
+
+La respuesta es B. False (Falso).
+
+Cuando se elimina un archivo existente de un contenedor, no se elimina automáticamente de la capa de almacenamiento de la imagen del contenedor base. Las capas de almacenamiento de la imagen del contenedor base son solo de lectura y no se pueden modificar. Por lo tanto, si se elimina un archivo de un contenedor, solo se elimina del sistema de archivos del contenedor en sí y no afecta la capa de almacenamiento de la imagen base.
+
+Es importante tener en cuenta que los contenedores utilizan una arquitectura de capas, donde cada capa representa una modificación o adición al sistema de archivos. Por lo tanto, si se elimina un archivo de una capa específica, no afectará las capas superiores ni las capas inferiores en la jerarquía de capas.
+
+
+
+Assuming myvol is a named volume created with Docker or Podman, what is the correct syntax to mount it inside a container, under /data? Select all answers that apply.
+
+A. run -it --mount source=myvol,target=/data alpine sh
+B. run -it -v myvol:/data:ro alpine sh
+C. run -it -v /data:/myvol alpine sh
+D. run -it -v /data:myvol alpine sh
+E. All of the above
+F. None of the above
+
+La respuesta correcta es A. run -it --mount source=myvol,target=/data alpine sh.
+
+La opción A utiliza la sintaxis actual para montar un volumen en un contenedor Docker o Podman. La opción B utiliza la sintaxis anterior, pero aún es compatible con versiones más antiguas de Docker. La opción C invierte los términos de origen y destino y la opción D utiliza un formato incorrecto.
+
+Es importante tener en cuenta que el comando "run" inicia un nuevo contenedor. Si el contenedor ya se está ejecutando, se debe utilizar el comando "exec" para interactuar con él. El parámetro "-it" se utiliza para iniciar el contenedor en modo interactivo.
+
+La opción "--mount" especifica que se va a utilizar un volumen y la opción "source=myvol" indica que el nombre del volumen es "myvol". La opción "target=/data" indica que el volumen se montará en el directorio "/data" dentro del contenedor.
+
+
+
+
+What kind of volumes do we use to mount a host directory inside a Pod with rkt?
+
+- **A.** Machine volumes
+- **B.** Container volumes
+- **C.** Shared volumes
+- **D.** Host volumes
+
+La respuesta correcta es D. Host volumes.
+
+En rkt, se utilizan host volumes para montar un directorio del host dentro de un pod. Los host volumes permiten que un pod tenga acceso a un directorio del sistema de archivos del host y se utiliza el mismo enfoque que en Docker. Los host volumes se pueden crear utilizando el comando "rkt run" con la opción "--volume".
+
+Las opciones A, B y C no son correctas en el contexto de rkt. "Machine volumes" no es un término utilizado en rkt. "Container volumes" se refiere a los volúmenes que se crean y administran dentro de un contenedor, mientras que "Shared volumes" se refiere a los volúmenes que se comparten entre varios contenedores en un pod.
+
+
+
+What is the default storage driver for CRI-O?
+
+A. overlay
+B. Kubernetes
+C. OCI
+D. containers/storage
+E. overlayfs
+
+La respuesta correcta es E. overlayfs.
+
+Overlayfs es el controlador de almacenamiento predeterminado para CRI-O. CRI-O es un implementación de tiempo de ejecución de contenedor compatible con Open Container Initiative (OCI) y se utiliza comúnmente en los clústeres de Kubernetes.
+
+El controlador de almacenamiento es responsable de administrar cómo se almacenan y recuperan los datos en los contenedores. Overlayfs es una capa virtual de archivos que permite combinar varios sistemas de archivos en un solo sistema de archivos. Esto permite que el sistema de archivos del contenedor sea construido sobre la imagen base y las capas adicionales de los contenedores.
+
+Las opciones A y E se refieren a diferentes tipos de controladores de almacenamiento, pero en este contexto, "overlay" es un controlador de almacenamiento para Docker, mientras que "overlayfs" es utilizado por CRI-O. Las opciones B y C no son controladores de almacenamiento, sino estándares de contenedor y especificaciones. La opción D se refiere a un paquete en particular utilizado por algunos sistemas, pero no es el controlador de almacenamiento predeterminado para CRI-O.
